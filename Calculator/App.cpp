@@ -24,11 +24,8 @@ void App::App_Init(void)
 {
 	// Variables
 	mousepressed = false;
-	input1 = "0";
-	input2 = "0";
-	currentoperator = "";
-	dividebyzero = false;
-	displaymode = INPUT1;
+	input = "0";
+	displaymode = INPUT;
 
 	// Calculate the size of the calculator using the screen resolution.
 	videomode = VideoMode::getDesktopMode();
@@ -137,11 +134,9 @@ void App::Set_Display(std::string str)
 
 void App::Reset_Values(void)
 {
-	number2 = 0;
-	number1 = 0;
-	input1 = "0";
-	input2 = "0";
-	displaymode = INPUT1;
+	ops.clear();
+	numbers.clear();
+	input = "0";
 }
 
 void App::Calculate(size_t buttonnumber)
@@ -221,123 +216,156 @@ void App::Calculate(size_t buttonnumber)
 
 void App::Handle_Number(int number)
 {
-	dividebyzero = false;
-	switch (displaymode)
-	{
-	case INPUT1:
-		input1 += std::to_string(number);
-#ifdef DEBUG_Y
-		std::cout << "string 1 : " << input1 << " number 1 : " << std::stod(input1) << std::endl;
-#endif
-		break;
-	case INPUT2:
-		input2 += std::to_string(number);
-#ifdef DEBUG_Y
-		std::cout << "string 2 : " << input2 << " number 2 : " << std::stod(input2) << std::endl;
-#endif
-		break;
-	}
-
-
+	displaymode = INPUT;
+	input += std::to_string(number);
 }
 
 void App::Handle_Operator(std::string op)
 {
-	
-	currentoperator = op;
-	number1 = std::stod(input1);
-	input1 = "0";
-	displaymode = INPUT2;
+	ops.push_back(op);
+	numbers.push_back(std::stod(input));
+	std::cout << "New number added : " << input << std::endl;
+	input = "0";
 }
 
 void App::Handle_Output(void)
 {
-	number2 = std::stod(input2);
-	if (currentoperator == "*")
-		outputnumber = number1 * number2;
-	if (currentoperator == "/")
-		if (number2 == 0) dividebyzero = true;
-		else outputnumber = number1 / number2;
-	if (currentoperator == "+")
-		outputnumber = number1 + number2;
-	if (currentoperator == "-")
-		outputnumber = number1 - number2;
+	double result;
+	// Push last number.
+	numbers.push_back(std::stod(input));
+
 #ifdef DEBUG_Y
-	std::cout << "Output : " << number1 << currentoperator << number2 << " = " << outputnumber << std::endl;
+	std::cout << "New number added : " << input << std::endl;
 #endif
-	Reset_Values();
+
+#ifdef PEMDAS
+	// Check the * and / operations and do them first.
+	for (size_t i = 0; i < ops.size();)
+	{
+		if (ops[i] == "*")
+		{
+			numbers[i] = numbers[i] * numbers[i + 1];
+			numbers.erase(numbers.begin() + i + 1);
+			ops.erase(ops.begin() + i);
+		}
+		else if (ops[i] == "/")
+		{
+			if (numbers[i] != 0)
+			{
+				numbers[i] = numbers[i] / numbers[i + 1];
+				numbers.erase(numbers.begin() + i + 1);
+				ops.erase(ops.begin() + i);
+			}
+			else
+			{
+				displaymode = DIVIDEZERO;
+				Reset_Values();
+				return;
+			}
+		}
+		else
+		{
+			i++;
+		}
+	}
+
+	// First number in result
+	result = numbers[0];
+
+	// Loop over the rest of the + and - operations.
+	for (size_t i = 0; i < ops.size(); i++)
+	{
+		if (ops[i] == "+")
+		{
+			result += numbers[i + 1];
+		}
+		else if (ops[i] == "-")
+		{
+			result -= numbers[i + 1];
+		}
+	}
+
+	outputnumber = result;
 	displaymode = OUTPUT;
+#endif
+
+#ifndef PEMDAS
+	// First number in result.
+	result = numbers[0];
+
+	// Loop over all the operations
+	for (int i = 0; i < ops.size(); i++)
+	{
+		if (ops[i] == "+")
+		{
+			result += numbers[i + 1];
+		}
+		else if (ops[i] == "-")
+		{
+			result -= numbers[i + 1];
+		}
+		else if (ops[i] == "*")
+		{
+			result *= numbers[i + 1];
+		}
+		else if (ops[i] == "/")
+		{
+			if (numbers[i + 1] != 0)
+			{
+				result /= numbers[i + 1];
+			}
+			else
+			{
+				displaymode = DIVIDEZERO;
+				Reset_Values();
+				return;
+			}
+		}
+	}
+	outputnumber = result;
+	displaymode = OUTPUT;
+#endif
+
+#ifdef DEBUG_Y
+	std::cout << "Formula : " << numbers[0] << " ";
+	for (size_t i = 0; i < ops.size(); i++)
+	{
+		std::cout << ops[i] << " " << numbers[i + 1] << " ";
+	}
+	std::cout << " = " << outputnumber << std::endl;
+#endif
+
+	result = 0;
+	Reset_Values();
 }
 
 void App::Handle_Comma(void)
 {
-	switch (displaymode)
+	if (input.find(',') == std::string::npos)
 	{
-	case INPUT1:
-		if (input1.find(',') == std::string::npos)
-		{
-			input1 += ".";
-		}
-		break;
-	case INPUT2:
-		if (input2.find(',') == std::string::npos)
-		{
-			input2 += ".";
-		}
-		break;
+		input += ".";
 	}
 }
 
 void App::Handle_Backspace(void)
 {
-	switch (displaymode)
-	{
-	case INPUT1:
-		input1.pop_back();
-		break;
-	case INPUT2:
-		input2.pop_back();
-		break;
-	}
+	input.pop_back();
 }
 
 void App::Update_Display(void)
 {
 	switch (displaymode)
 	{
-	case INPUT1:
-	{
-		if (input1 != "0")
-		{
-			Set_Display(input1);
-		}
+	case INPUT:
+		Set_Display(input);
 		break;
-	}
-	case INPUT2:
-	{
-		if (input2 != "0")
-		{
-			Set_Display(input2);
-		}
+	case DIVIDEZERO:
+		displaytext->setString("NOPE");
 		break;
-	}
 	case OUTPUT:
-	{
-		if (!dividebyzero)
-		{
-			Set_Display(std::to_string(outputnumber));
-		}
-		else
-		{
-			displaytext->setString("NOPE");
-		}
-		displaymode = INPUT1;
+		Set_Display(std::to_string(outputnumber));
 		break;
 	}
-	default:
-		break;
-	}
-
 
 }
 

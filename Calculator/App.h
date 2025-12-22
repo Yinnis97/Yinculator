@@ -24,19 +24,14 @@ private:
 	bool buttonpressed;
 	size_t buttonnumber;
 
-	std::string input1;
-	std::string input2;
-	double number1;
-	double number2;
+	std::string input;
 	double outputnumber;
-	std::string currentoperator;
 	std::stringstream strstream;
 
 	std::vector<double>numbers;
 	std::vector<std::string>inputs;
 	std::vector<std::string>ops;
 
-	bool dividebyzero;
 	mode_t displaymode;
 
 public:
