@@ -250,7 +250,7 @@ void App::Handle_Output(void)
 		}
 		else if (ops[i] == "/")
 		{
-			if (numbers[i] != 0)
+			if (numbers[i+1] != 0)
 			{
 				numbers[i] = numbers[i] / numbers[i + 1];
 				numbers.erase(numbers.begin() + i + 1);
@@ -258,6 +258,7 @@ void App::Handle_Output(void)
 			}
 			else
 			{
+				std::cout << "Divide zero \n";
 				displaymode = DIVIDEZERO;
 				Reset_Values();
 				return;
@@ -349,7 +350,14 @@ void App::Handle_Comma(void)
 
 void App::Handle_Backspace(void)
 {
-	input.pop_back();
+	if (input.size() > 1)
+	{
+		input.pop_back();
+	}
+	else
+	{
+		input = "0";
+	}
 }
 
 void App::Update_Display(void)
