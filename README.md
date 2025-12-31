@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Calculator/Assets/Textures/Yinculator.png" width="800" alt="Calculator App">
+  <img src="Calculator/Assets/Textures/yinculator.png" width="800" alt="Calculator App">
 </p>
 
 <p align="center">
