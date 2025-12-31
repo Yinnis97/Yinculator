@@ -22,16 +22,9 @@
 ## Setup Instructions
 
 1. Git Copy the repository.
-3. Open the command line and enter the following commands:
-
-    ```cmd
-    cmake -B build -DCMAKE_BUILD_TYPE=Release
-    ```
-    ```cmd
-    cmake --build build --config Release
-    ```
-4. A build folder should now be available.  
-5. Open the build folder and navigate to the release folder.    
+3. Run the build.bat script.
+4. A Release folder should now be available.  
+5. Open the Release folder.  
 6. Start the .Exe.  
 
 ## Sources
