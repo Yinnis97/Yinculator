@@ -21,7 +21,7 @@
 
 ## Setup Instructions
 
-1. Git Copy the repository.
+1. Git Clone the repository.
 3. Run the build.bat script.
 4. A Release folder should now be available.  
 5. Open the Release folder.  
