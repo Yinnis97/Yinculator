@@ -17,6 +17,11 @@ file(GLOB SOURCES "${SRC_DIR}/*.cpp")
 
 add_executable(YinCulator ${SOURCES})
 
+# Hide console window on Windows
+if(WIN32)
+    set_target_properties(YinCulator PROPERTIES WIN32_EXECUTABLE TRUE)
+endif()
+
 # Link SFML
 target_link_libraries(YinCulator PRIVATE
     sfml-graphics
@@ -26,7 +31,7 @@ target_link_libraries(YinCulator PRIVATE
     flac
     freetype
     ogg
-	oggd
+    oggd
     vorbis
     vorbisenc
     vorbisfile

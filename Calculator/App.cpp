@@ -160,7 +160,7 @@ void App::Calculate(size_t buttonnumber)
 	case 4:				// 1/
 		break;
 	case 5:				// x²
-		Handle_Square();
+		Handle_Operator("²");
 		break;
 	case 6:				// sqrroot
 		break;
@@ -215,7 +215,7 @@ void App::Calculate(size_t buttonnumber)
 		Handle_Output();
 		break;
 	default:
-		std::cout << "Error in switch case - function : " << __FUNCTION__;
+		std::cout << "Error in switch case --> " << __FUNCTION__  << " at line : " << __LINE__ << std::endl;
 	}
 }
 
@@ -227,12 +227,25 @@ void App::Handle_Number(int number)
 
 void App::Handle_Operator(std::string op)
 {
-	ops.push_back(op);
-	numbers.push_back(std::stod(input));
+	if (op == "²")
+	{
+		numbers.push_back(std::stod(input));
 #ifdef DEBUG_Y
-	std::cout << "New number added : " << input << std::endl;
+		std::cout << "power -- New number added : " << input << std::endl;
 #endif
-	input = "0";
+		numbers.back() = numbers.back() * numbers.back();
+		input = std::to_string(numbers.back());
+		numbers.pop_back();
+	}
+	else
+	{
+		ops.push_back(op);
+		numbers.push_back(std::stod(input));
+#ifdef DEBUG_Y
+		std::cout << "operator -- New number added : " << input << "operator : " << ops.back() << std::endl;
+#endif
+		input = "0";
+	}
 }
 
 void App::Handle_Output(void)
@@ -242,9 +255,7 @@ void App::Handle_Output(void)
 	numbers.push_back(std::stod(input));
 
 #ifdef DEBUG_Y
-	std::cout << "New number added : " << input << std::endl;
-#endif
-#ifdef DEBUG_Y
+	std::cout << "output -- New number added : " << input << std::endl;
 	std::cout << "Formula : " << numbers[0] << " ";
 	for (size_t i = 0; i < ops.size(); i++)
 	{
@@ -368,13 +379,6 @@ void App::Handle_Backspace(void)
 	{
 		input = "0";
 	}
-}
-
-void App::Handle_Square(void)
-{
-	numbers.push_back(std::stod(input));
-	numbers.back() = numbers.back() * numbers.back();
-	input = "0";
 }
 
 void App::Update_Display(void)

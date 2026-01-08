@@ -55,7 +55,6 @@ public:
 	void Handle_Output(void);
 	void Handle_Comma(void);
 	void Handle_Backspace(void);
-	void Handle_Square(void);
 
 	void Update_Display(void);
 	void App_Pollevent(void);
