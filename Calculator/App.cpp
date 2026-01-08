@@ -1,5 +1,8 @@
 #include "App.h"
 
+namespace YIN
+{
+
 App::App()
 {
 	App_Init();
@@ -26,6 +29,7 @@ void App::App_Init(void)
 	mousepressed = false;
 	input = "0";
 	displaymode = INPUT;
+	pemmode = ON;
 
 	// Calculate the size of the calculator using the screen resolution.
 	videomode = VideoMode::getDesktopMode();
@@ -50,7 +54,7 @@ void App::App_Init(void)
 		std::string filepath = "Assets/Textures/button" + std::to_string(i) + ".png";
 		static_cast<void>(buttontexture[i].loadFromFile(filepath));
 	}
-	
+
 	// Have a space between everything and button outline.
 	float spacing = Get_Window_Size().x / 20;
 	float outlinethickness = Get_Window_Size().x / 100;
@@ -62,22 +66,22 @@ void App::App_Init(void)
 	baseshape.setTexture(&basetexture);
 
 	// Yinculator
-	yinculator.setSize({ Get_Window_Size().x - (2*spacing ) - (2*outlinethickness),Get_Window_Size().y / 10});
+	yinculator.setSize({ Get_Window_Size().x - (2 * spacing) - (2 * outlinethickness),Get_Window_Size().y / 10 });
 	yinculator.setPosition({ spacing + outlinethickness,spacing + outlinethickness });
 	yinculator.setFillColor(Color::White);
-	yinculator.setOutlineThickness(2*outlinethickness);
+	yinculator.setOutlineThickness(2 * outlinethickness);
 	yinculator.setOutlineColor(color_outline);
 	yinculator.setTexture(&yinculatortexture);
 
 	// Display
-	display.setSize({Get_Window_Size().x - (2*spacing) - (2*outlinethickness),Get_Window_Size().y / 8 - (2*outlinethickness)});
-	display.setPosition({ spacing + outlinethickness, yinculator.getSize().y + (2*spacing) + (4*outlinethickness) });
+	display.setSize({ Get_Window_Size().x - (2 * spacing) - (2 * outlinethickness),Get_Window_Size().y / 8 - (2 * outlinethickness) });
+	display.setPosition({ spacing + outlinethickness, yinculator.getSize().y + (2 * spacing) + (4 * outlinethickness) });
 	display.setFillColor(color_display);
-	display.setOutlineThickness(2*outlinethickness);
+	display.setOutlineThickness(2 * outlinethickness);
 	display.setOutlineColor(color_outline);
 
 	// Button Area
-	buttonarea.setSize({ (Get_Window_Size().x - (2*spacing)), (Get_Window_Size().y / 1.8f ) });
+	buttonarea.setSize({ (Get_Window_Size().x - (2 * spacing)), (Get_Window_Size().y / 1.8f) });
 	buttonarea.setPosition({ spacing,Get_Window_Size().y - buttonarea.getSize().y - spacing });
 	buttonarea.setFillColor(Color::White);
 	buttonarea.setOutlineThickness(outlinethickness);
@@ -89,7 +93,7 @@ void App::App_Init(void)
 
 	for (int i = 0; i < BUTTON_AMOUNT; i++)
 	{
-		buttons[i].setSize({ button_size_x- (2*outlinethickness), button_size_y - (2*outlinethickness) });
+		buttons[i].setSize({ button_size_x - (2 * outlinethickness), button_size_y - (2 * outlinethickness) });
 		buttons[i].setFillColor(Color::White);
 		buttons[i].setOutlineThickness(outlinethickness);
 		buttons[i].setOutlineColor(color_outline);
@@ -109,7 +113,7 @@ void App::App_Init(void)
 	// Display text
 	static_cast<void>(font.openFromFile("Assets/Fonts/armalite_rifle.ttf"));
 	displaytext.emplace(font);
-	displaytext->setPosition({display.getPosition().x + (2*outlinethickness) , display.getPosition().y});
+	displaytext->setPosition({ display.getPosition().x + (2 * outlinethickness) , display.getPosition().y });
 	displaytext->setCharacterSize(Get_Window_Size().x / 8);
 	displaytext->setString("0");
 	displaytext->setFillColor(color_text);
@@ -143,74 +147,75 @@ void App::Calculate(size_t buttonnumber)
 {
 	switch (buttonnumber)
 	{
-		case 0:				// %
-			break;
-		case 1:				// CE
-			break;
-		case 2:				// C
-			Reset_Values();
-			break;
-		case 3:				// <X	
-			Handle_Backspace();
-			break;
-		case 4:				// 1/
-			break;
-		case 5:				// x²
-			break;
-		case 6:				// sqrroot
-			break;
-		case 7:				// /
-			Handle_Operator("/");
-			break;
-		case 8:				// 7
-			Handle_Number(7);
-			break;
-		case 9:				// 8
-			Handle_Number(8);
-			break;
-		case 10:			// 9
-			Handle_Number(9);
-			break;
-		case 11:			// *
-			Handle_Operator("*");
-			break;
-		case 12:			// 4
-			Handle_Number(4);
-			break;
-		case 13:			// 5
-			Handle_Number(5);
-			break;
-		case 14:			// 6
-			Handle_Number(6);
-			break;
-		case 15:			// -
-			Handle_Operator("-");
-			break;
-		case 16:			// 1
-			Handle_Number(1);
-			break;
-		case 17:			// 2
-			Handle_Number(2);
-			break;
-		case 18:			// 3
-			Handle_Number(3);
-			break;
-		case 19:			// +
-			Handle_Operator("+");
-			break;
-		case 20:			// pi
-			break;
-		case 21:			// 0
-			Handle_Number(0);
-			break;
-		case 22:			// ,
-			Handle_Comma();
-			break;
-		case 23:			// =
-			Handle_Output();
-			break;
-		default : 
-			std::cout << "Error in switch case - function : " << __FUNCTION__;
+	case 0:				// %
+		break;
+	case 1:				// CE
+		break;
+	case 2:				// C
+		Reset_Values();
+		break;
+	case 3:				// <X	
+		Handle_Backspace();
+		break;
+	case 4:				// 1/
+		break;
+	case 5:				// x²
+		Handle_Square();
+		break;
+	case 6:				// sqrroot
+		break;
+	case 7:				// /
+		Handle_Operator("/");
+		break;
+	case 8:				// 7
+		Handle_Number(7);
+		break;
+	case 9:				// 8
+		Handle_Number(8);
+		break;
+	case 10:			// 9
+		Handle_Number(9);
+		break;
+	case 11:			// *
+		Handle_Operator("*");
+		break;
+	case 12:			// 4
+		Handle_Number(4);
+		break;
+	case 13:			// 5
+		Handle_Number(5);
+		break;
+	case 14:			// 6
+		Handle_Number(6);
+		break;
+	case 15:			// -
+		Handle_Operator("-");
+		break;
+	case 16:			// 1
+		Handle_Number(1);
+		break;
+	case 17:			// 2
+		Handle_Number(2);
+		break;
+	case 18:			// 3
+		Handle_Number(3);
+		break;
+	case 19:			// +
+		Handle_Operator("+");
+		break;
+	case 20:			// pi
+		break;
+	case 21:			// 0
+		Handle_Number(0);
+		break;
+	case 22:			// ,
+		Handle_Comma();
+		break;
+	case 23:			// =
+		Handle_Output();
+		break;
+	default:
+		std::cout << "Error in switch case - function : " << __FUNCTION__;
 	}
 }
 
@@ -224,7 +229,9 @@ void App::Handle_Operator(std::string op)
 {
 	ops.push_back(op);
 	numbers.push_back(std::stod(input));
+#ifdef DEBUG_Y
 	std::cout << "New number added : " << input << std::endl;
+#endif
 	input = "0";
 }
 
@@ -237,102 +244,105 @@ void App::Handle_Output(void)
 #ifdef DEBUG_Y
 	std::cout << "New number added : " << input << std::endl;
 #endif
-
-#ifdef PEMDAS
-	// Check the * and / operations and do them first.
-	for (size_t i = 0; i < ops.size();)
-	{
-		if (ops[i] == "*")
-		{
-			numbers[i] = numbers[i] * numbers[i + 1];
-			numbers.erase(numbers.begin() + i + 1);
-			ops.erase(ops.begin() + i);
-		}
-		else if (ops[i] == "/")
-		{
-			if (numbers[i+1] != 0)
-			{
-				numbers[i] = numbers[i] / numbers[i + 1];
-				numbers.erase(numbers.begin() + i + 1);
-				ops.erase(ops.begin() + i);
-			}
-			else
-			{
-				std::cout << "Divide zero \n";
-				displaymode = DIVIDEZERO;
-				Reset_Values();
-				return;
-			}
-		}
-		else
-		{
-			i++;
-		}
-	}
-
-	// First number in result
-	result = numbers[0];
-
-	// Loop over the rest of the + and - operations.
-	for (size_t i = 0; i < ops.size(); i++)
-	{
-		if (ops[i] == "+")
-		{
-			result += numbers[i + 1];
-		}
-		else if (ops[i] == "-")
-		{
-			result -= numbers[i + 1];
-		}
-	}
-
-	outputnumber = result;
-	displaymode = OUTPUT;
-#endif
-
-#ifndef PEMDAS
-	// First number in result.
-	result = numbers[0];
-
-	// Loop over all the operations
-	for (int i = 0; i < ops.size(); i++)
-	{
-		if (ops[i] == "+")
-		{
-			result += numbers[i + 1];
-		}
-		else if (ops[i] == "-")
-		{
-			result -= numbers[i + 1];
-		}
-		else if (ops[i] == "*")
-		{
-			result *= numbers[i + 1];
-		}
-		else if (ops[i] == "/")
-		{
-			if (numbers[i + 1] != 0)
-			{
-				result /= numbers[i + 1];
-			}
-			else
-			{
-				displaymode = DIVIDEZERO;
-				Reset_Values();
-				return;
-			}
-		}
-	}
-	outputnumber = result;
-	displaymode = OUTPUT;
-#endif
-
 #ifdef DEBUG_Y
 	std::cout << "Formula : " << numbers[0] << " ";
 	for (size_t i = 0; i < ops.size(); i++)
 	{
 		std::cout << ops[i] << " " << numbers[i + 1] << " ";
 	}
+#endif
+
+	if (pemmode == ON)
+	{
+		// Check the * and / operations and do them first.
+		for (size_t i = 0; i < ops.size();)
+		{
+			if (ops[i] == "*")
+			{
+				numbers[i] = numbers[i] * numbers[i + 1];
+				numbers.erase(numbers.begin() + i + 1);
+				ops.erase(ops.begin() + i);
+			}
+			else if (ops[i] == "/")
+			{
+				if (numbers[i + 1] != 0)
+				{
+					numbers[i] = numbers[i] / numbers[i + 1];
+					numbers.erase(numbers.begin() + i + 1);
+					ops.erase(ops.begin() + i);
+				}
+				else
+				{
+					std::cout << "Divide zero \n";
+					displaymode = DIVIDEZERO;
+					Reset_Values();
+					return;
+				}
+			}
+			else
+			{
+				i++;
+			}
+		}
+
+		// First number in result
+		result = numbers[0];
+
+		// Loop over the rest of the + and - operations.
+		for (size_t i = 0; i < ops.size(); i++)
+		{
+			if (ops[i] == "+")
+			{
+				result += numbers[i + 1];
+			}
+			else if (ops[i] == "-")
+			{
+				result -= numbers[i + 1];
+			}
+		}
+
+		outputnumber = result;
+		displaymode = OUTPUT;
+	}
+	else if (pemmode == OFF)
+	{
+		// First number in result.
+		result = numbers[0];
+
+		// Loop over all the operations
+		for (int i = 0; i < ops.size(); i++)
+		{
+			if (ops[i] == "+")
+			{
+				result += numbers[i + 1];
+			}
+			else if (ops[i] == "-")
+			{
+				result -= numbers[i + 1];
+			}
+			else if (ops[i] == "*")
+			{
+				result *= numbers[i + 1];
+			}
+			else if (ops[i] == "/")
+			{
+				if (numbers[i + 1] != 0)
+				{
+					result /= numbers[i + 1];
+				}
+				else
+				{
+					displaymode = DIVIDEZERO;
+					Reset_Values();
+					return;
+				}
+			}
+		}
+		outputnumber = result;
+		displaymode = OUTPUT;
+	}
+
+#ifdef DEBUG_Y
 	std::cout << " = " << outputnumber << std::endl;
 #endif
 
@@ -358,6 +368,13 @@ void App::Handle_Backspace(void)
 	{
 		input = "0";
 	}
+}
+
+void App::Handle_Square(void)
+{
+	numbers.push_back(std::stod(input));
+	numbers.back() = numbers.back() * numbers.back();
+	input = "0";
 }
 
 void App::Update_Display(void)
@@ -420,7 +437,6 @@ void App::App_Update(void)
 	{
 		if (buttonpressed)
 		{
-			//std::cout << "Button Pressed" << "Button : " << buttonnumber << std::endl;
 			Calculate(buttonnumber);
 		}
 		else
@@ -449,3 +465,6 @@ void App::App_Render(void)
 	}
 	window->display();
 }
+
+
+} // Namspace YIN

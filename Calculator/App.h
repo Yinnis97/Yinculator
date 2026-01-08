@@ -1,6 +1,7 @@
 #pragma once
 #include "Globals.h"
-
+namespace YIN
+{
 class App
 {
 private:
@@ -33,6 +34,7 @@ private:
 	std::vector<std::string>ops;
 
 	mode_t displaymode;
+	pemdas_mode_t pemmode;
 
 public:
 	App();
@@ -44,7 +46,7 @@ public:
 	void App_Init(void);
 	bool App_Runnig(void);
 
-	
+
 	void Set_Display(std::string str);
 	void Reset_Values(void);
 	void Calculate(size_t buttonnumber);
@@ -53,12 +55,16 @@ public:
 	void Handle_Output(void);
 	void Handle_Comma(void);
 	void Handle_Backspace(void);
+	void Handle_Square(void);
 
 	void Update_Display(void);
 	void App_Pollevent(void);
 	void App_Update(void);
 	void App_Render(void);
 };
+
+
+} // Namspace YIN
 
 /*
  cooltext images

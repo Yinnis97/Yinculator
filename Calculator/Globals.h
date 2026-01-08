@@ -10,11 +10,13 @@ using namespace sf;
 #define BUTTON_AMOUNT		24
 #define X_SIZE_DIVIDER		8
 #define Y_SIZE_DIVIDER		3
+#define DEBUG_Y				
 
-#define DEBUG_Y
-#define PEMDAS					// Order of Operations : Parentheses, Exponents, Multiplication/Division, Addition/Subtraction.
+namespace YIN
+{
 
-using mode_t = int;
+using mode_t = int;			// Display mode
+using pemdas_mode_t = bool; // Order of Operations : Parentheses, Exponents, Multiplication/Division, Addition/Subtraction.
 
 enum MODE
 {
@@ -23,3 +25,11 @@ enum MODE
 	OUTPUT
 };
 
+enum PEMDAS_MODE
+{
+	ON,
+	OFF
+};
+
+
+} // Namspace YIN

@@ -2,7 +2,7 @@
 
 int main()
 {
-    App app;
+    YIN::App app;
 
     while (app.App_Runnig())
     {
