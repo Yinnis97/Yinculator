@@ -20,6 +20,7 @@ private:
 
 	Font font;
 	std::optional<Text>displaytext;
+	std::optional<Text>pemdastext;
 
 	bool mousepressed;
 	bool buttonpressed;
@@ -46,10 +47,11 @@ public:
 	void App_Init(void);
 	bool App_Runnig(void);
 
-
 	void Set_Display(std::string str);
+	void Set_Pemdas(void);
 	void Reset_Values(void);
 	void Calculate(size_t buttonnumber);
+
 	void Handle_Number(int number);
 	void Handle_Operator(std::string op);
 	void Handle_Output(void);
@@ -65,12 +67,3 @@ public:
 
 } // Namspace YIN
 
-/*
- cooltext images
- textsize : 50
- #0374FF
- #012F70
- centered
- 70 * 70
- #1F1F1F
- */

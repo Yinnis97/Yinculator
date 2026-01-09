@@ -119,6 +119,16 @@ void App::App_Init(void)
 	displaytext->setFillColor(color_text);
 	displaytext->setOutlineColor(color_text_outline);
 	displaytext->setOutlineThickness(outlinethickness);
+
+	// Pemdas text
+	pemdastext.emplace(font);
+	pemdastext->setPosition({ buttonarea.getGlobalBounds().position.x + (buttons[0].getSize().x * 0.75f ), buttonarea.getGlobalBounds().position.y + (buttons[0].getSize().y * 0.8f ) });
+	pemdastext->setCharacterSize(Get_Window_Size().x / 32);
+	pemdastext->setString("On");
+	pemdastext->setFillColor(color_text);
+	pemdastext->setOutlineColor(color_text_outline);
+	pemdastext->setOutlineThickness(outlinethickness);
+	
 }
 
 bool App::App_Runnig(void)
@@ -136,6 +146,20 @@ void App::Set_Display(std::string str)
 	displaytext->setString(outputstr);
 }
 
+void App::Set_Pemdas(void)
+{
+	if (pemmode == ON)
+	{
+		pemmode = OFF;
+		pemdastext->setString("Off");
+	}
+	else if(pemmode == OFF)
+	{
+		pemmode = ON;
+		pemdastext->setString("On");
+	}
+}
+
 void App::Reset_Values(void)
 {
 	ops.clear();
@@ -147,7 +171,8 @@ void App::Calculate(size_t buttonnumber)
 {
 	switch (buttonnumber)
 	{
-	case 0:				// %
+	case 0:				// Set Pemdas
+		Set_Pemdas();
 		break;
 	case 1:				// CE
 		break;
@@ -467,6 +492,8 @@ void App::App_Render(void)
 	{
 		window->draw(buttons[i]);
 	}
+	window->draw(*pemdastext);
+
 	window->display();
 }
 

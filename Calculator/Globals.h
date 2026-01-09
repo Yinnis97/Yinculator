@@ -33,3 +33,14 @@ enum PEMDAS_MODE
 
 
 } // Namspace YIN
+
+
+/*
+ cooltext images
+ textsize : 50
+ #0374FF
+ #012F70
+ centered
+ 70 * 70
+ #1F1F1F
+*/
